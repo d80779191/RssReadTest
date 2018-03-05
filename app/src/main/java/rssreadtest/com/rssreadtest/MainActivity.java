@@ -23,8 +23,10 @@ import rssreadtest.com.rssreadtest.Module.adapter2;
 import rssreadtest.com.rssreadtest.Service.RssReadService;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String BROADCAST_ACTION_TAG = "BROADCAST_ACTION";
-    public static final String BROADCAST_ACTION_DATA = "BROADCAST_ACTION_DATA";
+    public static final String BROADCAST_ACTION_TAG = "BROADCAST_ACTION_TAG";
+    public static final String BROADCAST_ACTION_DAILY_TAG = "BROADCAST_ACTION_DAILY_TAG";
+    public static final String BROADCAST_ACTION_WEATHER_DATA = "BROADCAST_ACTION_WEATHER_DATA";
+    public static final String BROADCAST_ACTION_DAILY_DATA = "BROADCAST_ACTION_DAILY_DATA";
     private RssReadLayout layout;
     private Boolean isServiceOn;
     private RssDataReceiver rssDataReceiver;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         rssDataReceiver = new RssDataReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(MainActivity.BROADCAST_ACTION_TAG);
+        filter.addAction(MainActivity.BROADCAST_ACTION_DAILY_TAG);
         this.registerReceiver(rssDataReceiver, filter);
     }
 
@@ -73,19 +76,28 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // 先存入資料
             if (intent != null) {
-                String string = intent.getStringExtra(BROADCAST_ACTION_DATA);
-                receiveData = string.split("<BR>");
-                if (rssReadSQLModule.getCount() == 0) {
-                    insertDataToDatabase(receiveData);
-                } else {
-                    rssReadSQLModule.deleteAll();
-                    insertDataToDatabase(receiveData);
+                if (intent.getAction().equals(BROADCAST_ACTION_TAG)) {
+                    String string = intent.getStringExtra(BROADCAST_ACTION_WEATHER_DATA);
+                    receiveData = string.split("<BR>");
+                    if (rssReadSQLModule.getCount() == 0) {
+                        insertDataToDatabase(receiveData);
+                    } else {
+                        rssReadSQLModule.deleteAll();
+                        insertDataToDatabase(receiveData);
+                    }
+                    // 再讀取資料放進ListView
+                    setListView();
+                }
+                if (intent.getAction().equals(BROADCAST_ACTION_DAILY_TAG)) {
+                    String stringDaily = intent.getStringExtra(BROADCAST_ACTION_DAILY_DATA);
+                    Log.e("???????????????", intent.getStringExtra(BROADCAST_ACTION_DAILY_DATA));
+                    if (!stringDaily.equals("")) {
+                        layout.getTvDaily().setText(stringDaily);
+                    }
                 }
             } else {
 
             }
-            // 再讀取資料放進ListView
-            setListView();
         }
     }
 

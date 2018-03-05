@@ -39,7 +39,7 @@ public class RssReadLayout extends MainParentLayout{
         {
             lvData = new ListView(context);
             lvData.setId(View.generateViewId());
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WH.getH(80));
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WH.getH(70));
             layoutParams.addRule(BELOW, btnGetRss.getId());
             lvData.setLayoutParams(layoutParams);
             this.addView(lvData);
@@ -47,9 +47,10 @@ public class RssReadLayout extends MainParentLayout{
         {
             tvDaily = new TextView(context);
             tvDaily.setId(View.generateViewId());
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WH.getH(10));
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WH.getH(20));
             layoutParams.addRule(BELOW, lvData.getId());
             tvDaily.setLayoutParams(layoutParams);
+            tvDaily.setGravity(Gravity.CENTER);
             this.addView(tvDaily);
         }
     }
